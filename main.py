@@ -15,13 +15,43 @@ class Name(Field):
 
 
 class Phone(Field):
-    pass
+    def __init__(self, value):
+        if self.validation(value):
+            super().__init__(value)
 
+
+    def validation(self, phone_num):
+        if len(phone_num) == 10 and phone_num.isdigit():
+            return True
+        else:
+            return False
 
 class Record:
-    def __init__(self, name):
+    def __init__(self, name, *args):
         self.name = Name(name)
-        self.phones = []
+        self.phones = [*args]
+
+
+    def add_phone(self, phone_num):
+        self.phones.append(Phone(phone_num))
+    
+
+    def remove_phone(self, phone_num):
+        for phone in self.phones:
+            if phone.value == phone_num:
+                self.phones.remove(phone)
+    
+
+    def edit_phone(self, old_phone_num, new_phone_num):
+        for phone in self.phones:
+            if phone.value == old_phone_num:
+                phone.value = new_phone_num
+    
+
+    def find_phone(self, phone_num):
+        for phone in self.phones:
+            if phone.value == phone_num:
+                return phone
 
 
     def __str__(self):
@@ -29,7 +59,18 @@ class Record:
     
 
 class AddressBook(UserDict):
-    pass
+    def add_record(self, record):
+        self.data[record.name] = record
+
+
+    def find(self, name):
+        return self.data.get(name)
+
+
+    def delete(self, user_name):
+        for name, record in self.data.items():
+            if name == user_name:
+                self.data.pop(name)
 
 
 if __name__ == '__main__':
